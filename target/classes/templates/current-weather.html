@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Current Weather</title>
+</head>
+<body>
+
+<div>
+    <h3 th:text="'Current Weather Conditions - ' + ${currentWeather.name}"></h3>
+    <p th:text="${currentWeather.description}">Description</p>
+    <h3>Temperature</h3>
+    <p th:text="${currentWeather.temperature} + ' &#8451;'">Temperature</p>
+    <h3>Feels Like</h3>
+    <p th:text="${currentWeather.feelsLike} + ' &#8451;'">Feels Like</p>
+    <h3>Wind Speed</h3>
+    <p th:text="${currentWeather.windSpeed} + ' kmh'"></p>
+</div>
+</body>
+</html>

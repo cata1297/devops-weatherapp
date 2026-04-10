@@ -1,0 +1,67 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+
+jobs:
+  build-test-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Run unit tests
+        run: mvn test
+
+      - name: Build Docker image
+        run: docker build -t devops-weatherapp:${{ github.sha }} .
+
+      - name: Configure AWS credentials
+        if: github.event_name == 'push'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        if: github.event_name == 'push'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag image with commit SHA
+        if: github.event_name == 'push'
+        run: docker tag devops-weatherapp:${{ github.sha }} ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: Tag image as latest
+        if: github.event_name == 'push'
+        run: docker tag devops-weatherapp:${{ github.sha }} ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+      - name: Push image with commit SHA
+        if: github.event_name == 'push'
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: Push image latest
+        if: github.event_name == 'push'
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest

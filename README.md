@@ -67,6 +67,9 @@ The application pipeline is designed to:
 
 I intentionally kept the application pipeline focused on validating and publishing the container image.
 
+For the SAST step, I chose Trivy because it is simple to integrate, works well in GitHub Actions, and is a good fit for a compact homework repository.
+In a larger project or in a more formal enterprise setup, I would normally prefer CodeQL for deeper GitHub-native code analysis and longer-term maintainability.
+
 #### Terraform workflows
 
 Infrastructure is handled separately with Terraform:

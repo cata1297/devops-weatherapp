@@ -98,6 +98,8 @@ modules.xml
 # vscode files
 .vscode/
 
+target/
+
 terraform/.terraform/
 terraform/.terraform.lock.hcl
 terraform/terraform.tfstate

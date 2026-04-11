@@ -4,9 +4,17 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
+      - '.github/workflows/terraform-apply.yml'
   pull_request:
     branches:
       - master
+    paths-ignore:
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
+      - '.github/workflows/terraform-apply.yml'
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}

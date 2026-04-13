@@ -33,6 +33,11 @@ Please send us the URL of **the forked repository** and the **URL of the deploye
 
 Thank you!
 
+## Submission
+
+- Forked repository URL: https://github.com/cata1297/devops-weatherapp
+- Deployed application URL: http://devops-weatherapp-alb-361578777.eu-central-1.elb.amazonaws.com/
+
 ## Solution Overview
 
 My goal for this homework was to keep the delivery flow reproducible, clear, and cost-conscious.
@@ -62,10 +67,12 @@ The application pipeline is designed to:
 - run unit tests,
 - run a SAST dependency and filesystem scan,
 - build the Docker image,
-- push the image to Amazon ECR on pushes to the main branch,
+- push the image to Amazon ECR on pushes to the default branch of this fork,
 - avoid running unnecessarily for Terraform-only changes.
 
 I intentionally kept the application pipeline focused on validating and publishing the container image.
+
+The original exercise mentions `main`, but this fork uses `master` as its default branch. The workflows therefore target `master` so they match the actual repository branch used for pull requests and merges.
 
 For the SAST step, I chose Trivy because it is simple to integrate, works well in GitHub Actions, and is a good fit for a compact homework repository.
 In a larger project or in a more formal enterprise setup, I would normally prefer CodeQL for deeper GitHub-native code analysis and longer-term maintainability.
